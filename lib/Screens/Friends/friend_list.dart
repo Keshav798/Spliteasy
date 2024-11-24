@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:split_easy/Screens/Friends/Components/friend_component.dart';
 
 class FriendList extends StatefulWidget {
   const FriendList({Key? key}) : super(key: key);
@@ -10,10 +11,25 @@ class FriendList extends StatefulWidget {
 class _FriendListState extends State<FriendList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("Friend List Page"),
-      ),
+    return ListView(
+      children: const <FriendComponent>[
+        FriendComponent(
+          name: "Keshav",
+          money: 345,
+        ),
+        FriendComponent(
+          name: "Harsh",
+          money: -2346,
+        ),
+        FriendComponent(
+          name: "Virat",
+          money: 0,
+        ),
+        FriendComponent(
+          name: "Samson",
+          money: 0,
+        ),
+      ],
     );
   }
 }

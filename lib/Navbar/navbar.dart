@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:split_easy/Constants/colors.dart';
 import 'package:split_easy/Screens/Friends/friend_list.dart';
 import 'package:split_easy/Screens/Home/home.dart';
+import 'package:split_easy/Screens/Profile/profile_component.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -13,6 +14,8 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
+  bool _isProfileViewVisible =
+      false; // State to control profile view visibility
 
   final List<Widget> _tabs = [HomePage(), FriendList()];
 
@@ -22,6 +25,12 @@ class _NavBarState extends State<NavBar> {
     super.dispose();
   }
 
+  void toggleProfileView() {
+    setState(() {
+      _isProfileViewVisible = !_isProfileViewVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,10 +38,6 @@ class _NavBarState extends State<NavBar> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              "Spliteasy",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
             Row(
               children: [
                 TextButton(
@@ -49,8 +54,11 @@ class _NavBarState extends State<NavBar> {
                   child: Text(
                     "Home",
                     style: TextStyle(
-                      color: _currentIndex == 0 ? Colors.white : Colors.grey[300],
-                      fontWeight: _currentIndex == 0 ? FontWeight.bold : FontWeight.normal,
+                      color:
+                          _currentIndex == 0 ? Colors.white : Colors.grey[300],
+                      fontWeight: _currentIndex == 0
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                 ),
@@ -68,9 +76,27 @@ class _NavBarState extends State<NavBar> {
                   child: Text(
                     "Friends",
                     style: TextStyle(
-                      color: _currentIndex == 1 ? Colors.white : Colors.grey[300],
-                      fontWeight: _currentIndex == 1 ? FontWeight.bold : FontWeight.normal,
+                      color:
+                          _currentIndex == 1 ? Colors.white : Colors.grey[300],
+                      fontWeight: _currentIndex == 1
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.notifications),
+                ),
+                GestureDetector(
+                  onTap: toggleProfileView, // Toggle profile view visibility
+                  child: CircleAvatar(
+                    backgroundColor: AppColors.navBarBgColor,
+                    child: const Icon(Icons.person),
                   ),
                 ),
               ],
@@ -79,19 +105,27 @@ class _NavBarState extends State<NavBar> {
         ),
         backgroundColor: AppColors.navBarBgColor,
       ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        children: _tabs,
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            children: _tabs,
+          ),
+          if (_isProfileViewVisible) ...[
+            // Profile Sidebar
+            ProfileComponent(),
+          ],
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: () {},
         backgroundColor: AppColors.navBarBgColor,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
