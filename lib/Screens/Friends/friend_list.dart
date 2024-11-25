@@ -16,18 +16,22 @@ class _FriendListState extends State<FriendList> {
         FriendComponent(
           name: "Keshav",
           money: 345,
+          index: 0,
         ),
         FriendComponent(
           name: "Harsh",
           money: -2346,
+          index: 1,
         ),
         FriendComponent(
           name: "Virat",
           money: 0,
+          index: 0,
         ),
         FriendComponent(
           name: "Samson",
           money: 0,
+          index: 1,
         ),
       ],
     );

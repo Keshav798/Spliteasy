@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:split_easy/Constants/colors.dart';
 import 'package:split_easy/Navbar/navbar.dart';
 
 void main() {

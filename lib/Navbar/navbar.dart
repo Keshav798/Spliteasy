@@ -1,8 +1,10 @@
+import 'package:animated_background/animated_background.dart';
+import 'package:animated_background/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:split_easy/Constants/colors.dart';
 import 'package:split_easy/Screens/Friends/friend_list.dart';
-import 'package:split_easy/Screens/Home/home.dart';
 import 'package:split_easy/Screens/Profile/profile_component.dart';
+import 'package:split_easy/Screens/Split/split.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -11,13 +13,27 @@ class NavBar extends StatefulWidget {
   State<NavBar> createState() => _NavBarState();
 }
 
-class _NavBarState extends State<NavBar> {
+class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
   bool _isProfileViewVisible =
       false; // State to control profile view visibility
 
-  final List<Widget> _tabs = [HomePage(), FriendList()];
+  final List<Widget> _tabs = [SplitPage(), FriendList()];
+
+  // Defining Particles for animation.
+  ParticleOptions particles = ParticleOptions(
+    baseColor: AppColors.colorFirst,
+    spawnOpacity: 0.0,
+    opacityChangeRate: 0.25,
+    minOpacity: 0.1,
+    maxOpacity: 0.4,
+    particleCount: 250,
+    spawnMaxRadius: 7.0,
+    spawnMaxSpeed: 11.0,
+    spawnMinSpeed: 10,
+    spawnMinRadius: 1.0,
+  );
 
   @override
   void dispose() {
@@ -34,6 +50,7 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.colorFourth,
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +112,7 @@ class _NavBarState extends State<NavBar> {
                 GestureDetector(
                   onTap: toggleProfileView, // Toggle profile view visibility
                   child: CircleAvatar(
-                    backgroundColor: AppColors.navBarBgColor,
+                    backgroundColor: AppColors.colorFirst,
                     child: const Icon(Icons.person),
                   ),
                 ),
@@ -103,28 +120,42 @@ class _NavBarState extends State<NavBar> {
             ),
           ],
         ),
-        backgroundColor: AppColors.navBarBgColor,
+        backgroundColor: AppColors.colorSecond,
       ),
-      body: Stack(
-        children: [
-          PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            children: _tabs,
-          ),
-          if (_isProfileViewVisible) ...[
-            // Profile Sidebar
-            ProfileComponent(),
+      body: AnimatedBackground(
+        vsync: this,
+        behaviour: RandomParticleBehaviour(options: particles),
+        child: Stack(
+          children: [
+            PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              children: _tabs,
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                color: AppColors.colorThird.withOpacity(0.4),
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: Center(
+                  child: Text("Static"),
+                ),
+              ),
+            ),
+            if (_isProfileViewVisible) ...[
+              // Profile Sidebar
+              ProfileComponent(),
+            ],
           ],
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: AppColors.navBarBgColor,
+        backgroundColor: AppColors.colorSecond,
         child: const Icon(Icons.add),
       ),
     );

@@ -51,7 +51,7 @@ class _ProfileComponentState extends State<ProfileComponent> {
             height: containerHeight,
             padding: EdgeInsets.all(screenWidth * 0.01),
             decoration: BoxDecoration(
-              color: AppColors.navBarBgColor,
+              color: AppColors.colorSecond,
               borderRadius: BorderRadius.circular(screenWidth * 0.02),
             ),
             child: Column(
@@ -59,19 +59,35 @@ class _ProfileComponentState extends State<ProfileComponent> {
               children: [
                 // Profile Photo
                 CircleAvatar(
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Icon(
+                      Icons.edit,
+                      size: containerWidth * 0.1 * 0.5,
+                    ),
+                  ),
                   radius: containerWidth * 0.1, // Responsive size
                   backgroundImage: NetworkImage(profilePhotoUrl),
                 ),
                 SizedBox(height: containerHeight * 0.02),
 
                 // Name and Username
-                Text(
-                  userName,
-                  style: TextStyle(
-                    fontSize: containerWidth * 0.05,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      userName + " ",
+                      style: TextStyle(
+                        fontSize: containerWidth * 0.05,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Icon(
+                      Icons.edit,
+                      size: containerWidth * 0.1 * 0.5,
+                    )
+                  ],
                 ),
                 Text(
                   userHandle,
@@ -150,22 +166,22 @@ class _ProfileComponentState extends State<ProfileComponent> {
                         style: TextStyle(fontSize: containerWidth * 0.04),
                       ),
                     ),
-                    TextButton.icon(
-                      onPressed: () {
-                        // Edit profile logic
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                      ),
-                      icon: Icon(
-                        Icons.edit,
-                        size: containerWidth * 0.04, // Icon scaled to text size
-                      ),
-                      label: Text(
-                        "Edit Profile",
-                        style: TextStyle(fontSize: containerWidth * 0.04),
-                      ),
-                    ),
+                    // TextButton.icon(
+                    //   onPressed: () {
+                    //     // Edit profile logic
+                    //   },
+                    //   style: TextButton.styleFrom(
+                    //     foregroundColor: Colors.white,
+                    //   ),
+                    //   icon: Icon(
+                    //     Icons.edit,
+                    //     size: containerWidth * 0.04, // Icon scaled to text size
+                    //   ),
+                    //   label: Text(
+                    //     "Edit Profile",
+                    //     style: TextStyle(fontSize: containerWidth * 0.04),
+                    //   ),
+                    // ),
                   ],
                 ),
               ],

@@ -2,3 +2,9 @@ modules = ["cpp-clang14", "web", "swift-5.8", "dart-2.18", "dart-3.5"]
 
 [nix]
 channel = "stable-24_05"
+
+[[ports]]
+localPort = 32873
+
+[[ports]]
+localPort = 46463
