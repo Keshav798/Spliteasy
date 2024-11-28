@@ -1,1 +1,26 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
 build/
+
+# IntelliJ related
+.idea/
+
+# VS Code related
+.vscode/
+
+# macOS related
+.DS_Store
+
+# Windows related
+Thumbs.db
+
+# Android related
+local.properties
+
+# iOS related
+Podfile.lock
+Flutter/Flutter.podspec
