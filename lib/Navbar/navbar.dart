@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:split_easy/Constants/colors.dart';
 import 'package:split_easy/Screens/Friends/friend_list.dart';
 import 'package:split_easy/Screens/Profile/profile_component.dart';
+import 'package:split_easy/Screens/Share/share_list.dart';
 import 'package:split_easy/Screens/Split/split.dart';
 
 class NavBar extends StatefulWidget {
@@ -69,7 +70,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                     );
                   },
                   child: Text(
-                    "Home",
+                    "Splits",
                     style: TextStyle(
                       color:
                           _currentIndex == 0 ? Colors.white : Colors.grey[300],
@@ -142,7 +143,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                 color: AppColors.colorThird.withOpacity(0.4),
                 width: MediaQuery.of(context).size.width * 0.5,
                 child: Center(
-                  child: Text("Static"),
+                  child: ShareList(),
                 ),
               ),
             ),
