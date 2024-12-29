@@ -110,12 +110,15 @@ class _ShareComponentState extends State<ShareComponent> {
                   color: Colors.white54,
                 ),
               ),
-              Text(
-                widget.time,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white54,
+              GestureDetector(
+                onTap: (){},
+                child: Text(
+                  "Clear off",
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
