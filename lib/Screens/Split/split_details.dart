@@ -262,18 +262,51 @@ class _SplitDetailsState extends State<SplitDetails> {
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(
-                            splitName,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1.2,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                splitName,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 1.2,
+                                ),
+                                overflow: TextOverflow.ellipsis, // Add ellipsis for long text
+                                maxLines: 2, // Limit the text to 2 lines
+                              ),
+                            ],
                           ),
                         ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.colorFirst,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onPressed: () {
+                            // Add your logic here for adding a share
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(Icons.add, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text("Add Share", style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                        )
                       ],
                     ),
+
                     const SizedBox(height: 8),
                     Row(
                       children: [
