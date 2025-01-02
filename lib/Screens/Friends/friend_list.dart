@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:split_easy/Models/user_model.dart';
+import 'package:split_easy/Providers/user_provider.dart';
 import 'package:split_easy/Screens/Friends/Components/friend_component.dart';
 import 'package:split_easy/Utils/friend_data_encoder.dart';
 
@@ -13,41 +16,27 @@ class FriendList extends StatefulWidget {
 class _FriendListState extends State<FriendList> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <GestureDetector>[
-        GestureDetector(
-          child: FriendComponent(
-            name: "Keshav",
-            money: 345,
-            index: 0,
-          ),
-          onTap: () {
-            String encodedFriendDetails = encodeFriendDetails("friendId");
-            context.go('/friend/$encodedFriendDetails');  // Navigates and updates the URL
-          },
-        ),
-        GestureDetector(
-          child: FriendComponent(
-            name: "Harsh",
-            money: -2346,
-            index: 1,
-          ),
-        ),
-        GestureDetector(
-          child: FriendComponent(
-            name: "Virat",
-            money: 0,
-            index: 0,
-          ),
-        ),
-        GestureDetector(
-          child: FriendComponent(
-            name: "Samson",
-            money: 0,
-            index: 1,
-          ),
-        ),
-      ],
-    );
+       return Consumer<UserProvider>(
+        builder: (context, value, child) {
+          User? user=value.user;
+          List<UserFreind>? friends=user!.friendList;
+          return ListView.builder(
+            itemCount: friends?.length,
+            itemBuilder: (context,index){
+              return GestureDetector(
+                child: FriendComponent(
+                  name: friends?[index].name??"no name",
+                  money: friends?[index].amount!.toDouble()??0,
+                  index: index,
+                ),
+                onTap: () {
+                  String encodedFriendDetails = encodeFriendDetails(friends?[index].userId??"userId");
+                  context.go('/friend/$encodedFriendDetails');  // Navigates and updates the URL
+                },
+              );
+            }
+            );
+        },
+      );
   }
 }

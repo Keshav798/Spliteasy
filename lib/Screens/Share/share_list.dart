@@ -10,30 +10,7 @@ class ShareList extends StatefulWidget {
 }
 
 class _ShareListState extends State<ShareList> {
-  final List<Map<String, dynamic>> shares = [
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    // Add more shares as needed
-  ];
+  List<Map<String, dynamic>> shares = [];
 
   String searchQuery = "";
   String filterOption = "All";
@@ -74,6 +51,31 @@ class _ShareListState extends State<ShareList> {
 
   @override
   Widget build(BuildContext context) {
+    shares=[
+    {
+      "name": "Anshul",
+      "money": 345.87,
+      "split": "Vacation",
+      "date": "2024-12-01",
+      "time": "10:45 AM"
+    },
+    {
+      "name": "Sakshi",
+      "money": -2500.0,
+      "split": "Rent",
+      "date": "2024-12-05",
+      "time": "12:00 PM"
+    },
+    {
+      "name": "Rohan",
+      "money": 1500.0,
+      "split": "Food",
+      "date": "2024-12-20",
+      "time": "08:30 PM"
+    },
+    // Add more shares as needed
+  ];
+
     return Column(
       children: [
         // Search Bar and Filter Button

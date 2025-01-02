@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:split_easy/Constants/colors.dart';
+import 'package:split_easy/Models/user_model.dart';
+import 'package:split_easy/Providers/user_provider.dart';
 
 class ProfileComponent extends StatefulWidget {
   const ProfileComponent({super.key});
@@ -18,6 +21,13 @@ class _ProfileComponentState extends State<ProfileComponent> {
 
   @override
   Widget build(BuildContext context) {
+    User? user=Provider.of<UserProvider>(context).user;
+    userName=user!.name??"no name";
+    userHandle=user!.email??"no email";
+    totalOwed=user!.totalOwed!.toDouble();
+    totalToReceive=user!.totalLended!.toDouble();
+
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 

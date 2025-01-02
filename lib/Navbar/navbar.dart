@@ -1,5 +1,4 @@
 import 'package:animated_background/animated_background.dart';
-import 'package:animated_background/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:split_easy/Constants/colors.dart';
 import 'package:split_easy/Screens/Friends/friend_list.dart';
