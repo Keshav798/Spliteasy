@@ -23,9 +23,9 @@ class _ProfileComponentState extends State<ProfileComponent> {
   Widget build(BuildContext context) {
     User? user=Provider.of<UserProvider>(context).user;
     userName=user!.name??"no name";
-    userHandle=user!.email??"no email";
-    totalOwed=user!.totalOwed!.toDouble();
-    totalToReceive=user!.totalLended!.toDouble();
+    userHandle=user.email??"no email";
+    totalOwed=user.totalOwed!.toDouble();
+    totalToReceive=user.totalLended!.toDouble();
 
 
     final screenWidth = MediaQuery.of(context).size.width;

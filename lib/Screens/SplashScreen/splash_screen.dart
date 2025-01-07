@@ -7,7 +7,6 @@ import 'package:split_easy/Providers/share_provider.dart';
 import 'package:split_easy/Providers/user_provider.dart';
 import 'package:split_easy/Routes/routes.dart';
 import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
-import 'package:split_easy/main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -92,7 +91,12 @@ class _SplashScreenState extends State<SplashScreen> {
         }];
 
       List<Share> shares=[];
-      for(Map<String,dynamic> json in shareListJson) shares.add(Share.fromJson(json));
+      for(Map<String,dynamic> json in shareListJson) {
+        Share currShare=Share.fromJson(json);
+        currShare.isPrimary=true; //add logic
+        currShare.amount=currShare.isPrimary!?currShare.amount:currShare.amount!*-1;
+        shares.add(currShare);
+      }
       context.read<ShareProvider>().setShares(shares);
 
     setState(() {

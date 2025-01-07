@@ -1,6 +1,7 @@
 class Share {
   ShareUser? userPrimary;
   ShareUser? userSecondary;
+  bool? isPrimary;
   ShareSplit? split;
   String? sId;
   String? title;
@@ -14,6 +15,7 @@ class Share {
   Share(
       {this.userPrimary,
       this.userSecondary,
+      this.isPrimary,
       this.split,
       this.sId,
       this.title,

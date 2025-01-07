@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:split_easy/Constants/colors.dart';
+import 'package:split_easy/Constants/measurments.dart';
+import 'package:split_easy/Models/share_model.dart';
+import 'package:split_easy/Providers/share_provider.dart';
 import 'package:split_easy/Screens/Share/Components/share_component.dart';
 
 class SplitDetails extends StatefulWidget {
@@ -46,149 +50,21 @@ class _SplitDetailsState extends State<SplitDetails> {
   double amount = -345;
   String creatorName = "Keshav";
 
-  final List<Map<String, dynamic>> shares = [
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    // Add more shares as needed
-  ];
-
+  List<Share> shares = [];
   String searchQuery = "";
   String filterOption = "All";
 
-  List<Map<String, dynamic>> get filteredShares {
-    List<Map<String, dynamic>> filtered = shares;
+  List<Share> get filteredShares {
+    List<Share> filtered = shares;
 
     // Apply search
     if (searchQuery.isNotEmpty) {
       filtered = filtered.where((share) {
-        return share["name"]
+        String name=share.isPrimary!?share.userSecondary!.userName!: share.userPrimary!.userName!;
+        return name
                 .toLowerCase()
                 .contains(searchQuery.toLowerCase()) ||
-            share["split"]
+                share.title!
                 .toLowerCase()
                 .contains(searchQuery.toLowerCase());
       }).toList();
@@ -196,17 +72,23 @@ class _SplitDetailsState extends State<SplitDetails> {
 
     // Apply filter
     if (filterOption == "owed first") {
-      filtered.sort((a, b) => (a["money"] < 0 ? 0 : 1)
-          .compareTo(b["money"] < 0 ? 0 : 1));
+      filtered.sort((a, b) => (a.amount! < 0 ? 0 : 1)
+          .compareTo(b.amount! < 0 ? 0 : 1));
     } else if (filterOption == "lended first") {
-      filtered.sort((a, b) => (a["money"] > 0 ? 0 : 1)
-          .compareTo(b["money"] > 0 ? 0 : 1));
+      filtered.sort((a, b) => (a.amount! > 0 ? 0 : 1)
+          .compareTo(b.amount! > 0 ? 0 : 1));
     } else if (filterOption == "newest first") {
-      filtered.sort((a, b) => DateTime.parse(b["date"])
-          .compareTo(DateTime.parse(a["date"])));
+      filtered.sort((a, b) => DateTime.parse(b.createdAt!)
+          .compareTo(DateTime.parse(a.createdAt!)));
     } else if (filterOption == "oldest first") {
-      filtered.sort((a, b) => DateTime.parse(a["date"])
-          .compareTo(DateTime.parse(b["date"])));
+      filtered.sort((a, b) => DateTime.parse(a.createdAt!)
+          .compareTo(DateTime.parse(b.createdAt!)));
+    } else if (filterOption == "cleared first") {
+      filtered.sort((a, b) => (a.isCleared==true?0:1)
+          .compareTo(b.isCleared==true?0:1));
+    } else if (filterOption == "uncleared first") {
+      filtered.sort((a, b) => (a.isCleared==true?1:0)
+          .compareTo(b.isCleared==true?1:0));
     }
 
     return filtered;
@@ -214,6 +96,7 @@ class _SplitDetailsState extends State<SplitDetails> {
 
   @override
   Widget build(BuildContext context) {
+    shares=Provider.of<ShareProvider>(context).shares;
     return Scaffold(
       backgroundColor: AppColors.colorFourth,
       appBar: AppBar(
@@ -294,6 +177,32 @@ class _SplitDetailsState extends State<SplitDetails> {
                           ),
                           onPressed: () {
                             // Add your logic here for adding a share
+                            final json={
+                              "userPrimary": {
+                                  "userId": "676a83ef5a1fa2abc876cc80",
+                                  "userName": "Saksham"
+                              },
+                              "userSecondary": {
+                                  "userId": "676a83d55a1fa2abc876cc7a",
+                                  "userName": "Keshav"
+                              },
+                              "split": {
+                                  "splitName": "Manali Trip",
+                                  "splitId": "676a84985a1fa2abc876cc97"
+                              },
+                              "_id": "6776b2f51781cee6faea2ad5",
+                              "title": "Hotel",
+                              "isCleared": false,
+                              "amount": 200,
+                              "shareId": "6776b2f51781cee6faea2ad6",
+                              "createdAt": "2025-01-02T15:38:29.353Z",
+                              "updatedAt": "2025-01-02T15:38:29.353Z",
+                              "__v": 0
+                          };
+                            Share currShare=Share.fromJson(json);
+                            currShare.isPrimary=false; //add logic
+                            currShare.amount=currShare.isPrimary!?currShare.amount:currShare.amount!*-1;
+                            Provider.of<ShareProvider>(context,listen: false).addShare(currShare);
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -418,7 +327,7 @@ class _SplitDetailsState extends State<SplitDetails> {
                         });
                       },
                       decoration: InputDecoration(
-                        hintText: "Search by name or split",
+                        hintText: "Search by name or title",
                         prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -454,6 +363,14 @@ class _SplitDetailsState extends State<SplitDetails> {
                         value: "oldest first",
                         child: Text("Oldest First"),
                       ),
+                      const PopupMenuItem(
+                        value: "cleared first",
+                        child: Text("Cleared First"),
+                      ),
+                      const PopupMenuItem(
+                        value: "uncleared first",
+                        child: Text("Uncleared First"),
+                      ),
                     ],
                     child: Container(
                       padding: const EdgeInsets.all(12.0),
@@ -483,17 +400,18 @@ class _SplitDetailsState extends State<SplitDetails> {
                       crossAxisCount: crossAxisCount,
                       crossAxisSpacing: 12.0,
                       mainAxisSpacing: 12.0,
-                      childAspectRatio: isWideScreen ? 2.2 : 1.5,
+                      childAspectRatio: isWideScreen ? childAspectRatioForSHareComponent_WideScreen : childAspectRatioForSHareComponent_SmallScreen,
                     ),
                     itemBuilder: (context, index) {
-                      final share = filteredShares[index];
                       return ShareComponent(
-                        name: share["name"],
-                        money: share["money"],
-                        split: share["split"],
-                        date: share["date"],
-                        time: share["time"],
-                        index: index,
+                        name: filteredShares[index].isPrimary!?filteredShares[index].userSecondary!.userName!: filteredShares[index].userPrimary!.userName!,
+                      money: filteredShares[index].amount!.toDouble(),
+                      split: filteredShares[index].split!.splitName!,
+                      date: DateTime.parse(filteredShares[index].createdAt!).day.toString() +"-"+DateTime.parse(filteredShares[index].createdAt!).month.toString()+"-"+DateTime.parse(filteredShares[index].createdAt!).year.toString(),
+                      time: DateTime.parse(filteredShares[index].createdAt!).hour.toString() +":"+DateTime.parse(filteredShares[index].createdAt!).minute.toString(),
+                      index: index,
+                      isCleared: filteredShares[index].isCleared!,
+                      title: filteredShares[index].title!,
                       );
                     },
                   );

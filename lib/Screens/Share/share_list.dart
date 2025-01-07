@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:split_easy/Constants/colors.dart';
+import 'package:split_easy/Constants/measurments.dart';
+import 'package:split_easy/Models/share_model.dart';
+import 'package:split_easy/Providers/share_provider.dart';
 import 'package:split_easy/Screens/Share/Components/share_component.dart';
 
 class ShareList extends StatefulWidget {
@@ -10,22 +14,26 @@ class ShareList extends StatefulWidget {
 }
 
 class _ShareListState extends State<ShareList> {
-  List<Map<String, dynamic>> shares = [];
+  List<Share> shares = [];
 
   String searchQuery = "";
   String filterOption = "All";
 
   // Filtered and searched list
-  List<Map<String, dynamic>> get filteredShares {
-    List<Map<String, dynamic>> filtered = shares;
+  List<Share> get filteredShares {
+    List<Share> filtered = shares;
 
     // Apply search
     if (searchQuery.isNotEmpty) {
       filtered = filtered.where((share) {
-        return share["name"]
+        String name=share.isPrimary!?share.userSecondary!.userName!: share.userPrimary!.userName!;
+        return name
                 .toLowerCase()
                 .contains(searchQuery.toLowerCase()) ||
-            share["split"]
+            share.split!.splitName!
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase()) || 
+                share.title!
                 .toLowerCase()
                 .contains(searchQuery.toLowerCase());
       }).toList();
@@ -33,17 +41,23 @@ class _ShareListState extends State<ShareList> {
 
     // Apply filter
     if (filterOption == "owed first") {
-      filtered.sort((a, b) => (a["money"] < 0 ? 0 : 1)
-          .compareTo(b["money"] < 0 ? 0 : 1));
+      filtered.sort((a, b) => (a.amount! < 0 ? 0 : 1)
+          .compareTo(b.amount! < 0 ? 0 : 1));
     } else if (filterOption == "lended first") {
-      filtered.sort((a, b) => (a["money"] > 0 ? 0 : 1)
-          .compareTo(b["money"] > 0 ? 0 : 1));
+      filtered.sort((a, b) => (a.amount! > 0 ? 0 : 1)
+          .compareTo(b.amount! > 0 ? 0 : 1));
     } else if (filterOption == "newest first") {
-      filtered.sort((a, b) => DateTime.parse(b["date"])
-          .compareTo(DateTime.parse(a["date"])));
+      filtered.sort((a, b) => DateTime.parse(b.createdAt!)
+          .compareTo(DateTime.parse(a.createdAt!)));
     } else if (filterOption == "oldest first") {
-      filtered.sort((a, b) => DateTime.parse(a["date"])
-          .compareTo(DateTime.parse(b["date"])));
+      filtered.sort((a, b) => DateTime.parse(a.createdAt!)
+          .compareTo(DateTime.parse(b.createdAt!)));
+    } else if (filterOption == "cleared first") {
+      filtered.sort((a, b) => (a.isCleared==true?0:1)
+          .compareTo(b.isCleared==true?0:1));
+    } else if (filterOption == "uncleared first") {
+      filtered.sort((a, b) => (a.isCleared==true?1:0)
+          .compareTo(b.isCleared==true?1:0));
     }
 
     return filtered;
@@ -51,30 +65,37 @@ class _ShareListState extends State<ShareList> {
 
   @override
   Widget build(BuildContext context) {
-    shares=[
-    {
-      "name": "Anshul",
-      "money": 345.87,
-      "split": "Vacation",
-      "date": "2024-12-01",
-      "time": "10:45 AM"
-    },
-    {
-      "name": "Sakshi",
-      "money": -2500.0,
-      "split": "Rent",
-      "date": "2024-12-05",
-      "time": "12:00 PM"
-    },
-    {
-      "name": "Rohan",
-      "money": 1500.0,
-      "split": "Food",
-      "date": "2024-12-20",
-      "time": "08:30 PM"
-    },
-    // Add more shares as needed
-  ];
+    shares=Provider.of<ShareProvider>(context).shares;
+  //   shares=[
+  //   {
+  //     "name": "Anshul",
+  //     "money": 345.87,
+  //     "split": "Vacation",
+  //     "date": "2024-12-01",
+  //     "time": "10:45 AM",
+  //     "title":"Lunch",
+  //     "isCleared":false
+  //   },
+  //   {
+  //     "name": "Sakshi",
+  //     "money": -2500.0,
+  //     "split": "Manali Trip",
+  //     "date": "2024-12-05",
+  //     "time": "12:00 PM",
+  //     "title":"Cab",
+  //     "isCleared":true
+  //   },
+  //   {
+  //     "name": "Rohan",
+  //     "money": 1500.0,
+  //     "split": "Food",
+  //     "date": "2024-12-20",
+  //     "time": "08:30 PM",
+  //     "title":"Dinner",
+  //     "isCleared":true
+  //   },
+  //   // Add more shares as needed
+  // ];
 
     return Column(
       children: [
@@ -91,7 +112,7 @@ class _ShareListState extends State<ShareList> {
                     });
                   },
                   decoration: InputDecoration(
-                    hintText: "Search by name or split",
+                    hintText: "Search by name , split or title",
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -127,6 +148,14 @@ class _ShareListState extends State<ShareList> {
                     value: "oldest first",
                     child: Text("Oldest First"),
                   ),
+                  const PopupMenuItem(
+                    value: "cleared first",
+                    child: Text("Cleared First"),
+                  ),
+                  const PopupMenuItem(
+                    value: "uncleared first",
+                    child: Text("Uncleared First"),
+                  ),
                 ],
                 child: Container(
                   padding: const EdgeInsets.all(12.0),
@@ -152,8 +181,8 @@ class _ShareListState extends State<ShareList> {
                 // Determine number of tiles per row and aspect ratio dynamically
                 final isWideScreen = constraints.maxWidth > 600;
                 final childAspectRatio = isWideScreen
-                    ? constraints.maxWidth / (constraints.maxHeight / 2.2)
-                    : 1.5;
+                    ? childAspectRatioForSHareComponent_WideScreen
+                    : childAspectRatioForSHareComponent_SmallScreen;
 
                 return GridView.builder(
                   itemCount: filteredShares.length,
@@ -165,12 +194,14 @@ class _ShareListState extends State<ShareList> {
                   ),
                   itemBuilder: (context, index) {
                     return ShareComponent(
-                      name: filteredShares[index]["name"],
-                      money: filteredShares[index]["money"],
-                      split: filteredShares[index]["split"],
-                      date: filteredShares[index]["date"],
-                      time: filteredShares[index]["time"],
+                      name: filteredShares[index].isPrimary!?filteredShares[index].userSecondary!.userName!: filteredShares[index].userPrimary!.userName!,
+                      money: filteredShares[index].amount!.toDouble(),
+                      split: filteredShares[index].split!.splitName!,
+                      date: DateTime.parse(filteredShares[index].createdAt!).day.toString() +"-"+DateTime.parse(filteredShares[index].createdAt!).month.toString()+"-"+DateTime.parse(filteredShares[index].createdAt!).year.toString(),
+                      time: DateTime.parse(filteredShares[index].createdAt!).hour.toString() +":"+DateTime.parse(filteredShares[index].createdAt!).minute.toString(),
                       index: index,
+                      isCleared: filteredShares[index].isCleared!,
+                      title: filteredShares[index].title!,
                     );
                   },
                 );

@@ -7,6 +7,8 @@ class ShareComponent extends StatefulWidget {
   final String split;
   final String date;
   final String time;
+  final String title;
+  final bool isCleared;
   final int index;
 
   const ShareComponent({
@@ -17,6 +19,8 @@ class ShareComponent extends StatefulWidget {
     required this.date,
     required this.time,
     required this.index,
+    required this.title,
+    required this.isCleared
   }) : super(key: key);
 
   @override
@@ -65,11 +69,10 @@ class _ShareComponentState extends State<ShareComponent> {
               ),
               Flexible(
                 child: Text(
-                  widget.split,
+                  widget.title,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    color: Colors.white70,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.end,
@@ -80,25 +83,44 @@ class _ShareComponentState extends State<ShareComponent> {
           const SizedBox(height: 8.0),
 
           // Money (owed or lended)
-          Text(
-            widget.money > 0
-                ? "You lended ₹${widget.money.toStringAsFixed(2)}"
-                : widget.money == 0
-                    ? "Cleared Up"
-                    : "You owe ₹${widget.money.abs().toStringAsFixed(2)}",
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: widget.money > 0
-                  ? Colors.green
-                  : widget.money == 0
-                      ? Colors.grey
-                      : Colors.red,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  widget.money > 0
+                      ? "You lended ₹${widget.money.toStringAsFixed(2)}"
+                      : widget.money == 0
+                          ? "Cleared Up"
+                          : "You owe ₹${widget.money.abs().toStringAsFixed(2)}",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: widget.money > 0
+                        ? Colors.green
+                        : widget.money == 0
+                            ? Colors.grey
+                            : Colors.red,
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  widget.split,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                ),
+                )
+            ],
           ),
           const SizedBox(height: 8.0),
 
-          // Date and Time
+          // Date and Button
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -112,14 +134,18 @@ class _ShareComponentState extends State<ShareComponent> {
               ),
               GestureDetector(
                 onTap: (){},
-                child: Text(
-                  "Clear off",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: widget.isCleared?AppColors.colorThird:AppColors.colorFirst,
+                    borderRadius: BorderRadius.circular(8),
+                    
                   ),
-                ),
+                  child: Text(
+                    widget.isCleared?"Cleared":"Clear off",
+                    style: const TextStyle(color: Colors.white),
+                  ),
+              ),
               ),
             ],
           ),
@@ -128,3 +154,4 @@ class _ShareComponentState extends State<ShareComponent> {
     );
   }
 }
+ 
