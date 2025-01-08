@@ -1,6 +1,6 @@
 import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
-import 'package:split_easy/Constants/colors.dart';
+import 'package:split_easy/Utils/Constants/colors.dart';
 import 'package:split_easy/Screens/Friends/friend_list.dart';
 import 'package:split_easy/Screens/Profile/profile_component.dart';
 import 'package:split_easy/Screens/Share/share_list.dart';

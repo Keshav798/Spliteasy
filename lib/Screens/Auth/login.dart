@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:split_easy/Constants/colors.dart';
+import 'package:split_easy/Screens/UtilityScreens/information.dart';
+import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
+import 'package:split_easy/Screens/UtilityScreens/warning.dart';
+import 'package:split_easy/Utils/API/api_helper.dart';
+import 'package:split_easy/Utils/Constants/colors.dart';
 import 'dart:html' as html;
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool _isLoading=false;
+
+  TextEditingController emailController=TextEditingController();
+  TextEditingController passController=TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isLoading?LoadingPage():Scaffold(
       backgroundColor: AppColors.colorFourth,
       body: Center(
         child: SingleChildScrollView(
@@ -36,6 +51,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: "Email",
                     border: OutlineInputBorder(),
@@ -45,6 +61,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: passController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -61,16 +78,45 @@ class LoginPage extends StatelessWidget {
                       backgroundColor: AppColors.colorFirst,
                     ),
                     onPressed: () async {
-                      // Add your login logic here
-                     // Obtain shared preferences instance
-                    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                    // Save a value to SharedPreferences
-                    await prefs.setString("token", "token");
+                      print("email :"+emailController.text);
+                      print("pass :"+passController.text);
 
-                    // Proceed with your login logic
-                    print("Value saved successfully!");
-                    html.window.location.reload();
+                      if(emailController.text.isEmpty || passController.text.isEmpty){
+                      showWarning(context, "Email and Password cannot be empty");
+                      return; 
+                      }
+
+                      setState(() {
+                        _isLoading=true;
+                      });                    
+
+                      String? string = await ApiHelper.loginUser(emailController.text, passController.text,context);
+                      
+
+                      if(string==null) {
+                        setState(() {
+                          _isLoading=false;
+                        });
+                        return;
+                      }
+
+                      String token=string.split('-')[0];
+                      String userId=string.split('-')[1];
+
+                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                      // Save a value to SharedPreferences
+                      await prefs.setString("token", token);
+                      await prefs.setString("userId", userId);
+
+                      // Proceed with your login logic
+                      print("Value saved successfully!");
+                      setState(() {
+                          _isLoading=false;
+                        });
+                      showInformation(context, "Login succesfull");
+                      html.window.location.reload();
                     },
                     child: const Text("Login"),
                   ),

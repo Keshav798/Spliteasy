@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:split_easy/Constants/colors.dart';
+import 'package:split_easy/Utils/Constants/colors.dart';
 
 class SplitComponent extends StatefulWidget {
   final String title;

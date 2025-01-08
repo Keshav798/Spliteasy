@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:split_easy/Constants/colors.dart';
+import 'package:split_easy/Screens/UtilityScreens/information.dart';
+import 'package:split_easy/Screens/UtilityScreens/warning.dart';
+import 'package:split_easy/Utils/API/api_helper.dart';
+import 'package:split_easy/Utils/Constants/colors.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  bool _isLoading=false;
+
+  TextEditingController emailController=TextEditingController();
+  TextEditingController nameController=TextEditingController();
+  TextEditingController passController=TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +49,7 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 TextField(
+                  controller: nameController,
                   decoration: InputDecoration(
                     labelText: "Name",
                     border: OutlineInputBorder(),
@@ -43,6 +59,7 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: "Email",
                     border: OutlineInputBorder(),
@@ -52,6 +69,7 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: passController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -67,8 +85,24 @@ class RegisterPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.colorFirst,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       // Add your registration logic here
+
+                      if(emailController.text.isEmpty || passController.text.isEmpty || nameController.text.isEmpty){
+                      showWarning(context, "Email ,name and Password cannot be empty");
+                      return; 
+                      }
+
+                      setState(() {
+                        _isLoading=true;
+                      });
+
+                      bool createdUser=await ApiHelper.registerUser(nameController.text,emailController.text,passController.text,context);
+                      if(createdUser){
+                        showInformation(context, "User created succesfully, please login");
+                        context.go('/login');
+                      }
+
                     },
                     child: const Text("Register"),
                   ),

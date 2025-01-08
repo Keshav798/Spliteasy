@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:split_easy/Constants/colors.dart';
-import 'package:split_easy/Constants/measurments.dart';
+import 'package:split_easy/Utils/Constants/colors.dart';
+import 'package:split_easy/Utils/Constants/measurments.dart';
 import 'package:split_easy/Models/share_model.dart';
 import 'package:split_easy/Screens/Share/Components/share_component.dart';
 

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:split_easy/Models/user_model.dart';
 import 'package:split_easy/Providers/user_provider.dart';
 import 'package:split_easy/Screens/Split/Components/split_component.dart';
-import 'package:split_easy/Utils/split_data_encoder.dart';
+import 'package:split_easy/Utils/Encoders/split_data_encoder.dart';
 
  
 class SplitPage extends StatefulWidget {

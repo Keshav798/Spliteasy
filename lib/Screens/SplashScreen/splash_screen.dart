@@ -5,7 +5,7 @@ import 'package:split_easy/Models/share_model.dart';
 import 'package:split_easy/Models/user_model.dart';
 import 'package:split_easy/Providers/share_provider.dart';
 import 'package:split_easy/Providers/user_provider.dart';
-import 'package:split_easy/Routes/routes.dart';
+import 'package:split_easy/Utils/Routes/routes.dart';
 import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<bool> getValidation() async {
     await Future.delayed(Duration(seconds: 5));
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString("token")=="token";
+    return prefs.getString("token")!=null;
   }
 
   Future<void> initialize() async {

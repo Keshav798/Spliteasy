@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:split_easy/Models/user_model.dart';
 import 'package:split_easy/Providers/user_provider.dart';
 import 'package:split_easy/Screens/Friends/Components/friend_component.dart';
-import 'package:split_easy/Utils/friend_data_encoder.dart';
+import 'package:split_easy/Utils/Encoders/friend_data_encoder.dart';
 
 class FriendList extends StatefulWidget {
   const FriendList({Key? key}) : super(key: key);
