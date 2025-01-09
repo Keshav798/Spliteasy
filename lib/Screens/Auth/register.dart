@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:split_easy/Screens/UtilityScreens/information.dart';
+import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
 import 'package:split_easy/Screens/UtilityScreens/warning.dart';
 import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
@@ -20,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isLoading?LoadingPage(): Scaffold(
       backgroundColor: AppColors.colorFourth,
       body: Center(
         child: SingleChildScrollView(

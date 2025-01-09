@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:split_easy/Screens/UtilityScreens/warning.dart';
+import 'package:split_easy/Utils/SharedPreferences/shared_preferences_helper.dart';
 
 class ApiHelper {
-  static final String base_url="https://e369-2405-201-4003-f06d-216-3eff-fe70-8168.ngrok-free.app/";
+  static final String base_url="http://localhost:3000/";
 
   static Future<String?> loginUser(String email,String password,BuildContext context) async{
     
@@ -27,7 +28,7 @@ class ApiHelper {
       if (response.statusCode == 200) {
         // Parse the JSON response
         print('Data fetched: $data');
-        return data["accessToken"]+"-"+data["userId"];
+        return data["accessToken"]+":"+data["userId"];
       } else {
         print('Failed to fetch data: ${response.statusCode}');
         showWarning(context, data["message"]);
@@ -74,4 +75,49 @@ class ApiHelper {
     }
   }
   
+  static Future<Map<String, dynamic>?> getUser() async {
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    String? userId = await SharedPreferencesHelper.getUserId();
+
+    if (token == null || userId == null) {
+      if (token == null) print("token is null");
+      if (userId == null) print("userId is null");
+      return null;
+    }
+
+    final url = Uri.parse(base_url + "api/user/" + userId);
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    try {
+      print('Request URL: $url');
+      print('Request Headers: $headers');
+
+      final response = await http.get(url, headers: headers);
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      // Check if the response is JSON
+      if (response.headers['content-type']?.contains('application/json') ?? false) {
+        final data = json.decode(response.body);
+
+        if (data["message"] == "Success") {
+          print('Data fetched: $data');
+          return data["user"];
+        } else {
+          print('Failed to fetch data: ${data["message"]}');
+          return null;
+        }
+      } else {
+        print('Non-JSON response received: ${response.body}');
+        return null;
+      }
+    } catch (error) {
+      print('Error: $error');
+      return null;
+    }
+  }
+
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:split_easy/Screens/UtilityScreens/information.dart';
+import 'dart:html' as html;
 import 'package:split_easy/Utils/Constants/colors.dart';
 import 'package:split_easy/Models/user_model.dart';
 import 'package:split_easy/Providers/user_provider.dart';
+import 'package:split_easy/Utils/SharedPreferences/shared_preferences_helper.dart';
 
 class ProfileComponent extends StatefulWidget {
   const ProfileComponent({super.key});
@@ -161,18 +164,18 @@ class _ProfileComponentState extends State<ProfileComponent> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     TextButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
                         // Copy credentials logic
+                        await SharedPreferencesHelper.removeAuthToken();
+                        await SharedPreferencesHelper.removeUserId();
+                        showInformation(context,"Logged out successfuly");
+                        html.window.location.reload();
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white,
                       ),
-                      icon: Icon(
-                        Icons.copy,
-                        size: containerWidth * 0.04, // Icon scaled to text size
-                      ),
                       label: Text(
-                        "Copy Credentials",
+                        "Log out",
                         style: TextStyle(fontSize: containerWidth * 0.04),
                       ),
                     ),

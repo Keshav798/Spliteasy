@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:split_easy/Screens/UtilityScreens/information.dart';
 import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
 import 'package:split_easy/Screens/UtilityScreens/warning.dart';
 import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
 import 'dart:html' as html;
+
+import 'package:split_easy/Utils/SharedPreferences/shared_preferences_helper.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -92,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                       });                    
 
                       String? string = await ApiHelper.loginUser(emailController.text, passController.text,context);
-                      
+                      print("string: "+string.toString());
 
                       if(string==null) {
                         setState(() {
@@ -101,14 +102,13 @@ class _LoginPageState extends State<LoginPage> {
                         return;
                       }
 
-                      String token=string.split('-')[0];
-                      String userId=string.split('-')[1];
+                      String token=string.split(':')[0];
+                      String userId=string.split(':')[1];
 
-                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                      print("userId: "+userId);
 
-                      // Save a value to SharedPreferences
-                      await prefs.setString("token", token);
-                      await prefs.setString("userId", userId);
+                      await SharedPreferencesHelper.setAuthToken(token);
+                      await SharedPreferencesHelper.setUserId(userId);
 
                       // Proceed with your login logic
                       print("Value saved successfully!");

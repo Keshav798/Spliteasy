@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:split_easy/Models/share_model.dart';
 import 'package:split_easy/Models/user_model.dart';
 import 'package:split_easy/Providers/share_provider.dart';
 import 'package:split_easy/Providers/user_provider.dart';
+import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Routes/routes.dart';
 import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
+import 'package:split_easy/Utils/SharedPreferences/shared_preferences_helper.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,49 +22,60 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<bool> getValidation() async {
     await Future.delayed(Duration(seconds: 5));
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString("token")!=null;
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    return token!=null;
   }
 
   Future<void> initialize() async {
     debugPrint("Function called");
     isValidated = await getValidation();
-     Map<String, dynamic> userJson = {
-              "_id": "676a83d55a1fa2abc876cc79",
-              "name": "Keshav",
-              "email": "keshav@company.com",
-              "password": "\$2b\$10\$mL2Ntf996xpXbFFdRCz7nuFOuWuP3UfoJkSaPbyCw96A2SecYSHEW",
-              "totalOwed": 0,
-              "totalLended": 200,
-              "userId": "676a83d55a1fa2abc876cc7a",
-              "splitList": [
-                {
-                  "splitId": "676a84985a1fa2abc876cc97",
-                  "splitTitle": "Manali Trip",
-                  "amount": 200,
-                  "_id": "676a84985a1fa2abc876cc99"
-                }
-              ],
-              "friendList": [
-                {
-                  "userId": "676a83e05a1fa2abc876cc7d",
-                  "name": "Anshul",
-                  "amount": 0,
-                  "shareList": [],
-                  "_id": "676a84425a1fa2abc876cc86"
-                },
-                {
-                  "userId": "676a83ef5a1fa2abc876cc80",
-                  "name": "Saksham",
-                  "amount": 200,
-                  "shareList": ["6776b2f51781cee6faea2ad6"],
-                  "_id": "676a98bcda74edc292e28087"
-                }
-              ],
-              "createdAt": "2024-12-24T09:50:13.767Z",
-              "updatedAt": "2025-01-02T15:38:29.616Z",
-              "__v": 3
-            };
+    if(!isValidated){
+      setState(() {
+        _isLoading = false;
+      });
+        return;
+    }
+    //  Map<String, dynamic> userJson = {
+    //           "_id": "676a83d55a1fa2abc876cc79",
+    //           "name": "Keshav",
+    //           "email": "keshav@company.com",
+    //           "password": "\$2b\$10\$mL2Ntf996xpXbFFdRCz7nuFOuWuP3UfoJkSaPbyCw96A2SecYSHEW",
+    //           "totalOwed": 0,
+    //           "totalLended": 200,
+    //           "userId": "676a83d55a1fa2abc876cc7a",
+    //           "splitList": [
+    //             {
+    //               "splitId": "676a84985a1fa2abc876cc97",
+    //               "splitTitle": "Manali Trip",
+    //               "amount": 200,
+    //               "_id": "676a84985a1fa2abc876cc99"
+    //             }
+    //           ],
+    //           "friendList": [
+    //             {
+    //               "userId": "676a83e05a1fa2abc876cc7d",
+    //               "name": "Anshul",
+    //               "amount": 0,
+    //               "shareList": [],
+    //               "_id": "676a84425a1fa2abc876cc86"
+    //             },
+    //             {
+    //               "userId": "676a83ef5a1fa2abc876cc80",
+    //               "name": "Saksham",
+    //               "amount": 200,
+    //               "shareList": ["6776b2f51781cee6faea2ad6"],
+    //               "_id": "676a98bcda74edc292e28087"
+    //             }
+    //           ],
+    //           "createdAt": "2024-12-24T09:50:13.767Z",
+    //           "updatedAt": "2025-01-02T15:38:29.616Z",
+    //           "__v": 3
+    //         };
+    Map<String,dynamic>? userJson= await ApiHelper.getUser();
+    if(userJson==null){
+      //here there should be a logic to go back to login or error page
+      return;
+    }
     User user = User.fromJson(userJson);
     context.read<UserProvider>().setUser(user);
 
