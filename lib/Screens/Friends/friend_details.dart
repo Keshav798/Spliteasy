@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:split_easy/Providers/user_provider.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
 import 'package:split_easy/Utils/Constants/measurments.dart';
 import 'package:split_easy/Models/share_model.dart';
@@ -20,8 +21,8 @@ class FriendDetails extends StatefulWidget {
 }
 
 class _FriendDetailsState extends State<FriendDetails> {
-  String name = "Aman";
-  double amount = 345;
+  String name = "Unkown";
+  double amount = 0;
 
   List<Share> shares = [];
   String searchQuery = "";
@@ -68,7 +69,12 @@ class _FriendDetailsState extends State<FriendDetails> {
 
   @override
   Widget build(BuildContext context) {
-    shares=Provider.of<ShareProvider>(context).shares;
+
+    shares=Provider.of<ShareProvider>(context).getFriendtShares(widget.friendId);
+    Map<String,dynamic> friend=Provider.of<UserProvider>(context).getFriend(widget.friendId);
+    name=friend["name"] as String;
+    amount=friend["amount"] as double;
+
     return Scaffold(
       backgroundColor: AppColors.colorFourth,
       appBar: AppBar(

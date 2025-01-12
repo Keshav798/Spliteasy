@@ -21,6 +21,18 @@ class ShareProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  List<Share> getSplitShares(String splitId) {
+    List<Share> splitShares=[];
+    for(Share currShare in _shares) if(currShare.split!.splitId==splitId) splitShares.add(currShare);
+    return splitShares; 
+  }
+
+  List<Share> getFriendtShares(String friendId) {
+    List<Share> friendShares=[];
+    for(Share currShare in _shares) if(currShare.userPrimary!.userId==friendId || currShare.userSecondary!.userId==friendId) friendShares.add(currShare);
+    return friendShares; 
+  }
+
   void clearShares() {
     _shares.clear();
     notifyListeners();

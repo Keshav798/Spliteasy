@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:split_easy/Providers/user_provider.dart';
+import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
+import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
 import 'package:split_easy/Utils/Constants/measurments.dart';
 import 'package:split_easy/Models/share_model.dart';
@@ -19,36 +22,12 @@ class SplitDetails extends StatefulWidget {
 }
 
 class _SplitDetailsState extends State<SplitDetails> {
-  String splitName = "Manali Trip";
-  List<String> participants = [
-    "Keshav",
-    "Sakshi",
-    "Aman",
-    "Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman","Keshav",
-    "Sakshi",
-    "Aman",
-    // Add more participants as needed
-  ];
+  bool _isLoading=false;
+
+  String splitName = "";
+  List<String> participants = [];
   double amount = -345;
-  String creatorName = "Keshav";
+  String creatorName = "";
 
   List<Share> shares = [];
   String searchQuery = "";
@@ -94,10 +73,34 @@ class _SplitDetailsState extends State<SplitDetails> {
     return filtered;
   }
 
+  Future<void> getStaticSplitData() async{
+    setState(() {
+      _isLoading=true;
+    });
+    Map<String,dynamic>? data=await ApiHelper.getStaticSplitData(widget.splitId);
+    //print(data);
+    splitName=data!["title"];
+    creatorName=data["createdBy"];
+    for(dynamic name in data["participants"]) participants.add(name as String);
+    setState(() {
+      _isLoading=false;
+    });
+  }
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getStaticSplitData();
+  }
+  
   @override
   Widget build(BuildContext context) {
-    shares=Provider.of<ShareProvider>(context).shares;
-    return Scaffold(
+
+    shares=Provider.of<ShareProvider>(context).getSplitShares(widget.splitId);
+    amount=Provider.of<UserProvider>(context).getSplitAmount(widget.splitId) as double;
+
+    return _isLoading?LoadingPage():Scaffold(
       backgroundColor: AppColors.colorFourth,
       appBar: AppBar(
         backgroundColor: AppColors.colorSecond,

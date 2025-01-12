@@ -92,20 +92,108 @@ class ApiHelper {
     };
 
     try {
-      print('Request URL: $url');
-      print('Request Headers: $headers');
+      //print('Request URL: $url');
+      //print('Request Headers: $headers');
 
       final response = await http.get(url, headers: headers);
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+      //print('Response Status Code: ${response.statusCode}');
+      //print('Response Body: ${response.body}');
 
       // Check if the response is JSON
       if (response.headers['content-type']?.contains('application/json') ?? false) {
         final data = json.decode(response.body);
 
         if (data["message"] == "Success") {
-          print('Data fetched: $data');
+          //print('Data fetched: $data');
           return data["user"];
+        } else {
+          print('Failed to fetch data: ${data["message"]}');
+          return null;
+        }
+      } else {
+        print('Non-JSON response received: ${response.body}');
+        return null;
+      }
+    } catch (error) {
+      print('Error: $error');
+      return null;
+    }
+  }
+
+  static Future<List<dynamic>?> getUserShares() async {
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    String? userId = await SharedPreferencesHelper.getUserId();
+
+    if (token == null || userId == null) {
+      if (token == null) print("token is null");
+      if (userId == null) print("userId is null");
+      return null;
+    }
+
+    final url = Uri.parse(base_url + "api/user/" + userId + "/shares");
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    try {
+      //print('Request URL: $url');
+      //print('Request Headers: $headers');
+
+      final response = await http.get(url, headers: headers);
+      //print('Response Status Code: ${response.statusCode}');
+      //print('Response Body: ${response.body}');
+
+      // Check if the response is JSON
+      if (response.headers['content-type']?.contains('application/json') ?? false) {
+        final data = json.decode(response.body);
+
+        if (data["message"] == "Success") {
+          //print('Data fetched: $data');
+          return data["shares"];
+        } else {
+          print('Failed to fetch data: ${data["message"]}');
+          return null;
+        }
+      } else {
+        print('Non-JSON response received: ${response.body}');
+        return null;
+      }
+    } catch (error) {
+      print('Error: $error');
+      return null;
+    }
+  }
+
+    static Future<Map<String, dynamic>?> getStaticSplitData(String splitId) async {
+    String? token = await SharedPreferencesHelper.getAuthToken();
+
+    if (token == null) {
+      if (token == null) print("token is null");
+      return null;
+    }
+
+    final url = Uri.parse(base_url + "api/split/" + splitId + "/static");
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    try {
+      //print('Request URL: $url');
+      //print('Request Headers: $headers');
+
+      final response = await http.get(url, headers: headers);
+      //print('Response Status Code: ${response.statusCode}');
+      //print('Response Body: ${response.body}');
+
+      // Check if the response is JSON
+      if (response.headers['content-type']?.contains('application/json') ?? false) {
+        final data = json.decode(response.body);
+
+        if (data["message"] == "Success") {
+          //print('Data fetched: $data');
+          return data["split"];
         } else {
           print('Failed to fetch data: ${data["message"]}');
           return null;
