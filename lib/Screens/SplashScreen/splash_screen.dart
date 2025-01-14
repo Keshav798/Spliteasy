@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   bool isValidated = true;
 
   Future<bool> getValidation() async {
-    await Future.delayed(Duration(seconds: 5));
+    //await Future.delayed(Duration(seconds: 5));
     String? token = await SharedPreferencesHelper.getAuthToken();
     return token!=null;
   }

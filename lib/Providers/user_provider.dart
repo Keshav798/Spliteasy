@@ -38,4 +38,16 @@ class UserProvider with ChangeNotifier {
       "amount":-99999
     };
   }
+
+  List<Map<String,dynamic>> getFriends(){
+    List<UserFreind>? friendList=_user!.friendList;
+    List<Map<String,dynamic>> friends=[];
+    if(friendList==null) return [];
+    for(UserFreind userFreind in friendList) friends.add({
+      "name":userFreind.name,
+      "amount":userFreind.amount,
+      "friendId":userFreind.userId
+    });
+    return friends;
+  }
 }

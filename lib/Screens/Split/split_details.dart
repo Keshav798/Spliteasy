@@ -26,7 +26,7 @@ class _SplitDetailsState extends State<SplitDetails> {
 
   String splitName = "";
   List<String> participants = [];
-  double amount = -345;
+  double amount = -9999;
   String creatorName = "";
 
   List<Share> shares = [];
@@ -78,7 +78,7 @@ class _SplitDetailsState extends State<SplitDetails> {
       _isLoading=true;
     });
     Map<String,dynamic>? data=await ApiHelper.getStaticSplitData(widget.splitId);
-    //print(data);
+    
     splitName=data!["title"];
     creatorName=data["createdBy"];
     for(dynamic name in data["participants"]) participants.add(name as String);

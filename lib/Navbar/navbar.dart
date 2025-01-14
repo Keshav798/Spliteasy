@@ -1,5 +1,7 @@
 import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
+import 'package:split_easy/Navbar/Components/add_friend_dialog.dart';
+import 'package:split_easy/Navbar/Components/new_split_dialog.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
 import 'package:split_easy/Screens/Friends/friend_list.dart';
 import 'package:split_easy/Screens/Profile/profile_component.dart';
@@ -154,7 +156,44 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Choose an Action"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Close action dialog
+                        showDialog(
+                          context: context,
+                          builder: (context) => const NewSplitDialog(),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.colorSecond),
+                      child: const Text("Add Split"),
+                    ),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Close action dialog
+                        showDialog(
+                          context: context,
+                          builder: (context) => const AddFriendDialog(),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.colorSecond),
+                      child: const Text("Add Friend"),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
         backgroundColor: AppColors.colorSecond,
         child: const Icon(Icons.add),
       ),
