@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:split_easy/Screens/UtilityScreens/information.dart';
 import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
-import 'package:split_easy/Screens/UtilityScreens/warning.dart';
 import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
 import 'dart:html' as html;
