@@ -5,7 +5,7 @@ import 'package:split_easy/Screens/UtilityScreens/warning.dart';
 import 'package:split_easy/Utils/SharedPreferences/shared_preferences_helper.dart';
 
 class ApiHelper {
-  static final String base_url="http://localhost:3000/";
+  static final String base_url="https://crjqgjkl-3000.inc1.devtunnels.ms/";
 
   static Future<String?> loginUser(String email,String password,BuildContext context) async{
     
@@ -165,7 +165,7 @@ class ApiHelper {
     }
   }
 
-    static Future<Map<String, dynamic>?> getStaticSplitData(String splitId) async {
+  static Future<Map<String, dynamic>?> getStaticSplitData(String splitId) async {
     String? token = await SharedPreferencesHelper.getAuthToken();
 
     if (token == null) {
@@ -207,5 +207,219 @@ class ApiHelper {
       return null;
     }
   }
+
+  static Future<bool> createSplit(String title,List<String> userIdList,BuildContext context) async{
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    String? userId = await SharedPreferencesHelper.getUserId();
+
+    if (token == null || userId == null) {
+      if (token == null) print("token is null");
+      if (userId == null) print("userId is null");
+      return false;
+    }
+
+    final url = Uri.parse(base_url + "api/split/");
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    userIdList.add(userId); //since user is itself part of the split
+    final Map<String,dynamic> body={
+      "title":title,
+      "createdBy":userId,
+      "users":userIdList
+    };
+
+    try {
+      final response = await http.post(
+        url, 
+        headers: headers,
+        body: json.encode(body));
+      final data = json.decode(response.body);
+
+      if (data["message"]=="Split created successfully") {
+        // Parse the JSON response
+        print('Data fetched: $data');
+        return true;
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+        showWarning(context, data["message"]);
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      showWarning(context, error.toString());
+      return false;
+    }
+  }
+
+  static Future<bool> createShare(String title,String userSecondryId,double amount,String splitId,BuildContext context) async{
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    String? userId = await SharedPreferencesHelper.getUserId();
+
+    if (token == null || userId == null) {
+      if (token == null) print("token is null");
+      if (userId == null) print("userId is null");
+      return false;
+    }
+
+    final url = Uri.parse(base_url + "api/share/");
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    final Map<String,dynamic> body={ 
+      "title":title,
+      "userPrimaryId":userId,
+      "userSecondaryId":userSecondryId,
+      "amount":amount,
+      "splitId":splitId 
+      
+    };
+
+    try {
+      final response = await http.post(
+        url, 
+        headers: headers,
+        body: json.encode(body));
+      final data = json.decode(response.body);
+
+      if (data["message"]=="Share created successfully") {
+        // Parse the JSON response
+        print('Data fetched: $data');
+        return true;
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+        showWarning(context, data["message"]);
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      showWarning(context, error.toString());
+      return false;
+    }
+  }
+  
+  static Future<bool> clearShare(String shareId,BuildContext context) async{
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    String? userId = await SharedPreferencesHelper.getUserId();
+
+    if (token == null || userId == null) {
+      if (token == null) print("token is null");
+      if (userId == null) print("userId is null");
+      return false;
+    }
+
+    final url = Uri.parse(base_url+"api/share/clearShare/"+shareId); // Replace with your API endpoint
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    try {
+      final response = await http.put(
+        url, 
+        headers: headers);
+      final data = json.decode(response.body);
+
+      if (data["message"] == "Share cleared successfully") {
+        // Parse the JSON response
+        print('Data fetched: $data');
+        return true;
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+        showWarning(context, data["message"]);
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      showWarning(context, error.toString());
+      return false;
+    }
+  }
+
+  static Future<bool> deleteShare(String shareId,BuildContext context) async{
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    String? userId = await SharedPreferencesHelper.getUserId();
+
+    if (token == null || userId == null) {
+      if (token == null) print("token is null");
+      if (userId == null) print("userId is null");
+      return false;
+    }
+
+    final url = Uri.parse(base_url+"api/share/"+shareId); // Replace with your API endpoint
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    try {
+      final response = await http.delete(
+        url, 
+        headers: headers);
+      final data = json.decode(response.body);
+
+      if (data["message"] == "Share deleted successfully") {
+        // Parse the JSON response
+        print('Data fetched: $data');
+        return true;
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+        showWarning(context, data["message"]);
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      showWarning(context, error.toString());
+      return false;
+    }
+  }
+
+    static Future<bool> addFriend(String friendEmail,BuildContext context) async{
+    String? token = await SharedPreferencesHelper.getAuthToken();
+    String? userId = await SharedPreferencesHelper.getUserId();
+
+    if (token == null || userId == null) {
+      if (token == null) print("token is null");
+      if (userId == null) print("userId is null");
+      return false;
+    }
+
+    final url = Uri.parse(base_url + "api/user/"+userId+"/friends");
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+
+    final Map<String,dynamic> body={
+      "friendEmail":friendEmail
+    };
+
+    try {
+      final response = await http.put(
+        url, 
+        headers: headers,
+        body: json.encode(body));
+      final data = json.decode(response.body);
+
+      if (data["message"]=="Success") {
+        // Parse the JSON response
+        print('Data fetched: $data');
+        return true;
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+        showWarning(context, data["message"]);
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      showWarning(context, error.toString());
+      return false;
+    }
+  }
+
 
 }

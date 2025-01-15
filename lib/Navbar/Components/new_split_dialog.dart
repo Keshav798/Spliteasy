@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:split_easy/Providers/user_provider.dart';
+import 'package:split_easy/Screens/UtilityScreens/information.dart';
+import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
 import 'package:split_easy/Screens/UtilityScreens/warning.dart';
+import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
+import 'dart:html' as html;
 
 class NewSplitDialog extends StatefulWidget {
   const NewSplitDialog({Key? key}) : super(key: key);
@@ -12,6 +16,7 @@ class NewSplitDialog extends StatefulWidget {
 }
 
 class _NewSplitDialogState extends State<NewSplitDialog> {
+  bool _isLoading=false;
   final TextEditingController _splitNameController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
   List<Map<String,dynamic>> _friends = []; // Sample data
@@ -35,7 +40,7 @@ class _NewSplitDialogState extends State<NewSplitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    return _isLoading?LoadingPage(): Dialog(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -126,13 +131,32 @@ class _NewSplitDialogState extends State<NewSplitDialog> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async{
                 // Handle adding the split
                 if(_splitNameController.text.isEmpty){
                   showWarning(context, "Title cannot be empty");
                   return;
                 }
                 print(_selectedFriends);
+                List<String> userIdList=[];
+                for(dynamic user in _selectedFriends) userIdList.add(user["friendId"]);
+
+                setState(() {
+                  _isLoading=true;
+                });
+
+                bool created=await ApiHelper.createSplit(_splitNameController.text, userIdList, context);
+
+                setState(() {
+                  _isLoading=false;
+                });
+
+                if(created) {
+                  showInformation(context, "Split created successfuly");
+                  await Future.delayed(Duration(seconds: 1));
+                  html.window.location.reload();
+                }
+
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(

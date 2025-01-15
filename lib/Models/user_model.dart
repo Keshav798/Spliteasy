@@ -4,14 +4,14 @@ class User {
   String? name;
   String? email;
   String? password;
-  int? totalOwed;
-  int? totalLended;
+  double? totalOwed;
+  double? totalLended;
   String? userId;
   List<UserSplit>? splitList;
   List<UserFreind>? friendList;
   String? createdAt;
   String? updatedAt;
-  int? iV;
+  double? iV;
 
   User(
       {this.sId,
@@ -77,7 +77,7 @@ class User {
 class UserSplit {
   String? splitId;
   String? splitTitle;
-  int? amount;
+  double? amount;
   String? sId;
 
   UserSplit({this.splitId, this.splitTitle, this.amount, this.sId});
@@ -102,7 +102,7 @@ class UserSplit {
 class UserFreind {
   String? userId;
   String? name;
-  int? amount;
+  double? amount;
   List<String>? shareList;
   String? sId;
 

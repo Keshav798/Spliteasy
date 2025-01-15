@@ -6,11 +6,11 @@ class Share {
   String? sId;
   String? title;
   bool? isCleared;
-  int? amount;
+  double? amount;
   String? shareId;
   String? createdAt;
   String? updatedAt;
-  int? iV;
+  double? iV;
 
   Share(
       {this.userPrimary,

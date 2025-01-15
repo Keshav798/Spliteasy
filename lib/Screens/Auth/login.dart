@@ -116,6 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                           _isLoading=false;
                         });
                       showInformation(context, "Login succesfull");
+                      await Future.delayed(Duration(seconds: 1));
                       html.window.location.reload();
                     },
                     child: const Text("Login"),

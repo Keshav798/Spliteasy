@@ -169,6 +169,7 @@ class _ProfileComponentState extends State<ProfileComponent> {
                         await SharedPreferencesHelper.removeAuthToken();
                         await SharedPreferencesHelper.removeUserId();
                         showInformation(context,"Logged out successfuly");
+                        await Future.delayed(Duration(seconds: 1));
                         html.window.location.reload();
                       },
                       style: TextButton.styleFrom(

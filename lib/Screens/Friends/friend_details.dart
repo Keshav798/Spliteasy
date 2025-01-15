@@ -278,6 +278,7 @@ class _FriendDetailsState extends State<FriendDetails> {
                     ),
                     itemBuilder: (context, index) {
                       return ShareComponent(
+                        shareId: filteredShares[index].shareId!,
                         name: filteredShares[index].isPrimary!?filteredShares[index].userSecondary!.userName!: filteredShares[index].userPrimary!.userName!,
                         money: filteredShares[index].amount!.toDouble(),
                         split: filteredShares[index].split!.splitName!,

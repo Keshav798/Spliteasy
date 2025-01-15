@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:split_easy/Providers/user_provider.dart';
+import 'package:split_easy/Screens/Split/Components/add_share_dialog.dart';
 import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
 import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
@@ -8,6 +9,7 @@ import 'package:split_easy/Utils/Constants/measurments.dart';
 import 'package:split_easy/Models/share_model.dart';
 import 'package:split_easy/Providers/share_provider.dart';
 import 'package:split_easy/Screens/Share/Components/share_component.dart';
+import 'package:split_easy/Utils/SharedPreferences/shared_preferences_helper.dart';
 
 class SplitDetails extends StatefulWidget {
   final String splitId;
@@ -28,6 +30,7 @@ class _SplitDetailsState extends State<SplitDetails> {
   List<String> participants = [];
   double amount = -9999;
   String creatorName = "";
+  dynamic users=[];
 
   List<Share> shares = [];
   String searchQuery = "";
@@ -80,8 +83,9 @@ class _SplitDetailsState extends State<SplitDetails> {
     Map<String,dynamic>? data=await ApiHelper.getStaticSplitData(widget.splitId);
     
     splitName=data!["title"];
-    creatorName=data["createdBy"];
-    for(dynamic name in data["participants"]) participants.add(name as String);
+    creatorName=data["createdBy"]["name"];
+    users=data["participants"];
+    for(dynamic userObject in users) participants.add(userObject["name"] as String);
     setState(() {
       _isLoading=false;
     });
@@ -178,34 +182,13 @@ class _SplitDetailsState extends State<SplitDetails> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onPressed: () {
-                            // Add your logic here for adding a share
-                            final json={
-                              "userPrimary": {
-                                  "userId": "676a83ef5a1fa2abc876cc80",
-                                  "userName": "Saksham"
-                              },
-                              "userSecondary": {
-                                  "userId": "676a83d55a1fa2abc876cc7a",
-                                  "userName": "Keshav"
-                              },
-                              "split": {
-                                  "splitName": "Manali Trip",
-                                  "splitId": "676a84985a1fa2abc876cc97"
-                              },
-                              "_id": "6776b2f51781cee6faea2ad5",
-                              "title": "Hotel",
-                              "isCleared": false,
-                              "amount": 200,
-                              "shareId": "6776b2f51781cee6faea2ad6",
-                              "createdAt": "2025-01-02T15:38:29.353Z",
-                              "updatedAt": "2025-01-02T15:38:29.353Z",
-                              "__v": 0
-                          };
-                            Share currShare=Share.fromJson(json);
-                            currShare.isPrimary=false; //add logic
-                            currShare.amount=currShare.isPrimary!?currShare.amount:currShare.amount!*-1;
-                            Provider.of<ShareProvider>(context,listen: false).addShare(currShare);
+                          onPressed: () async{
+                            String? currentUserId=await SharedPreferencesHelper.getUserId();
+                            users = users.where((user) => user['userId'] != currentUserId).toList();
+                            showDialog(
+                              context: context,
+                              builder: (context) => AddShareDialog(users: users,splitId: widget.splitId,),
+                            );
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -407,6 +390,7 @@ class _SplitDetailsState extends State<SplitDetails> {
                     ),
                     itemBuilder: (context, index) {
                       return ShareComponent(
+                        shareId: filteredShares[index].shareId!,
                         name: filteredShares[index].isPrimary!?filteredShares[index].userSecondary!.userName!: filteredShares[index].userPrimary!.userName!,
                       money: filteredShares[index].amount!.toDouble(),
                       split: filteredShares[index].split!.splitName!,

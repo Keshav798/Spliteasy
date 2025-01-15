@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:split_easy/Screens/UtilityScreens/information.dart';
+import 'package:split_easy/Screens/UtilityScreens/loading_page.dart';
+import 'package:split_easy/Screens/UtilityScreens/warning.dart';
+import 'package:split_easy/Utils/API/api_helper.dart';
 import 'package:split_easy/Utils/Constants/colors.dart';
+import 'dart:html' as html;
 
-class AddFriendDialog extends StatelessWidget {
+class AddFriendDialog extends StatefulWidget {
   const AddFriendDialog({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController _emailController = TextEditingController();
+  State<AddFriendDialog> createState() => _AddFriendDialogState();
+}
 
-    return Dialog(
+class _AddFriendDialogState extends State<AddFriendDialog> {
+  final TextEditingController _emailController = TextEditingController();
+    bool _isLoading=false;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoading?LoadingPage(): Dialog(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -52,9 +64,27 @@ class AddFriendDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async{
                 // Handle adding the friend
-                Navigator.pop(context);
+                if(_emailController.text.isEmpty){
+                  showWarning(context, "Enter email");
+                  return;
+                }
+                setState(() {
+                  _isLoading=true;
+                });
+
+                bool added=await ApiHelper.addFriend(_emailController.text, context);
+
+                setState(() {
+                  _isLoading=false;
+                });
+
+                if(added){
+                  showInformation(context, "Friend added successfully");
+                  Future.delayed(Duration(seconds: 1));
+                  html.window.location.reload();
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.colorSecond,

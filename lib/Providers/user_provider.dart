@@ -16,7 +16,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  int getSplitAmount(String splitId){
+  double getSplitAmount(String splitId){
     List<UserSplit>? userSplits=_user!.splitList;
     if(userSplits==null) return 0;
     for(UserSplit userSplit in userSplits) if(userSplit.splitId==splitId) return userSplit.amount??-99999;
