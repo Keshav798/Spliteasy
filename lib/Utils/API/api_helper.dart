@@ -5,7 +5,7 @@ import 'package:split_easy/Screens/UtilityScreens/warning.dart';
 import 'package:split_easy/Utils/SharedPreferences/shared_preferences_helper.dart';
 
 class ApiHelper {
-  static final String base_url="https://crjqgjkl-3000.inc1.devtunnels.ms/";
+  static final String base_url="https://spliteasy-backend.vercel.app/";
 
   static Future<String?> loginUser(String email,String password,BuildContext context) async{
     
